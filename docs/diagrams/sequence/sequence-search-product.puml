@@ -1,0 +1,170 @@
+@startuml sequence-sample
+!include ../_lib/xuanye/core.puml
+
+RED_ARROW
+
+title iCommerce API sequence flow
+
+actor Customer
+participant "iCommerce app" as icommerce
+participant "Gateway" as gateway
+participant "Product service" as service_product
+participant "Store service" as service_store
+participant "Database" as database
+participant "Cache" as cache
+participant "Storage bucket" as bucket
+participant "Storage disk" as storage
+participant "Log collector" as log_collector
+participant "Search engine" as search_engine
+
+Customer -> icommerce: Use app
+activate icommerce
+
+icommerce -> gateway: GET /api/v1/products
+activate gateway
+
+gateway --> log_collector: Transmit acccess_log
+log_collector --> search_engine: Transmit anccess_log
+
+gateway -> service_product: Upstream GET /api/v1/products
+activate service_product
+
+service_product -> cache: Lookup for cached data
+activate cache
+
+cache -> service_product: Return cached data (if any)
+deactivate cache
+destroy cache
+
+service_product -> database: Get data
+activate database
+
+database -> service_product: Return data
+deactivate database
+
+service_product --> cache: Set data for cache (for later use)
+
+service_product --> gateway: Return response
+deactivate service_product
+
+gateway --> icommerce: Return response data
+deactivate gateway
+
+icommerce -> Customer: Display data of products
+deactivate icommerce
+
+Customer -> icommerce: Use app, select a product for details
+activate icommerce
+
+icommerce -> gateway: GET /api/v1/products/:product_id
+activate gateway
+
+gateway --> log_collector: Transmit acccess_log
+log_collector --> search_engine: Transmit anccess_log
+
+gateway -> service_product: Upstream GET /api/v1/products/:product_id
+activate service_product
+
+service_product -> cache: Lookup for cached data
+activate cache
+
+cache -> service_product: Return cached data (if any)
+deactivate cache
+destroy cache
+
+service_product -> database: Get data
+activate database
+
+database -> service_product: Return data
+deactivate database
+
+service_product --> cache: Set data for cache (for later use)
+
+service_product -> service_store: Get available stores for product_id
+activate service_store
+
+service_store -> cache: Lookup for cached data
+activate cache
+
+cache -> service_store: Return cached data (if any)
+deactivate cache
+destroy cache
+
+service_store -> database: Get data of available stores
+activate database
+
+database -> service_store: Return data of available stores
+deactivate database
+
+service_store --> cache: Set data for cache (for later use)
+
+service_store -> service_product: Return data of available stores
+deactivate service_store
+
+service_product --> gateway: Return response
+deactivate service_product
+
+gateway --> icommerce: Return response data
+deactivate gateway
+
+icommerce -> Customer: Display data of product details
+deactivate icommerce
+
+icommerce -> gateway: GET /bucket/products/:product_id (product image)
+activate gateway
+
+gateway --> log_collector: Transmit acccess_log
+log_collector --> search_engine: Transmit anccess_log
+
+gateway -> bucket: GET /bucket/products/:product_id
+activate bucket
+
+bucket -> storage: Get file
+activate storage
+
+storage -> bucket: Return public file directory
+deactivate storage
+
+bucket --> gateway: Return public file directory
+deactivate bucket
+
+gateway --> icommerce: Return public file directory
+deactivate gateway
+
+icommerce -> Customer: Display product image
+deactivate icommerce
+
+icommerce -> gateway: GET /api/v1/stores
+activate gateway
+
+gateway --> log_collector: Transmit acccess_log
+log_collector --> search_engine: Transmit anccess_log
+
+gateway -> service_store: Upstream GET /api/v1/stores
+activate service_product
+
+service_product -> cache: Lookup for cached data
+activate cache
+
+cache -> service_store: Return cached data (if any)
+deactivate cache
+destroy cache
+
+service_store -> database: Get data
+activate database
+
+database -> service_store: Return data
+deactivate database
+
+service_store --> cache: Set data for cache (for later use)
+
+service_store --> gateway: Return response
+deactivate service_store
+
+gateway --> icommerce: Return response data
+deactivate gateway
+
+icommerce -> Customer: Display list of stores
+deactivate icommerce
+
+@enduml

@@ -1,0 +1,156 @@
+{
+	"swagger": "2.0",
+	"info": {
+		"description": "",
+		"version": "1.0.0",
+		"title": "Store service"
+	},
+	"host": "localhost:3000",
+	"basePath": "/v1",
+	"tags": [
+		{
+			"name": "store",
+			"description": "Everything about Store"
+		}
+	],
+	"schemes": [
+		"http"
+	],
+	"consumes": [
+		"application/json"
+	],
+	"produces": [
+		"application/json"
+	],
+	"paths": {
+		"/stores": {
+			"get": {
+				"tags": [
+					"stores"
+				],
+				"summary": "Get list of stores",
+				"description": "",
+				"operationId": "getStoreList",
+				"parameters": [
+					{
+						"in": "query",
+						"name": "store_code",
+						"type": "string",
+						"description": "Store code"
+					},
+					{
+						"in": "query",
+						"name": "branch_code",
+						"type": "string",
+						"description": "Store branch code"
+					},
+					{
+						"in": "query",
+						"name": "city",
+						"type": "string",
+						"description": "City code by IATA"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful result",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"data": {
+									"type": "array",
+									"items": {
+										"$ref": "#/definitions/Store"
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid input",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string",
+									"example": "Invalid input"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "No data found",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string",
+									"example": "No data found"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"definitions": {
+		"Store": {
+			"type": "object",
+			"properties": {
+				"store_code": {
+					"type": "string",
+					"example": "GS001"
+				},
+				"store_name": {
+					"type": "string",
+					"example": "Awesome game store"
+				},
+				"branches": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/Branch"
+					}
+				},
+				"phone": {
+					"type": "string",
+					"example": "84364931005"
+				}
+			}
+		},
+		"Branch": {
+			"type": "object",
+			"properties": {
+				"code": {
+					"type": "string",
+					"example": "GS001B001"
+				},
+				"name": {
+					"type": "string",
+					"example": "Branch 001"
+				},
+				"location": {
+					"type": "object",
+					"properties": {
+						"address": {
+							"type": "string",
+							"example": "370 Cach mang thang 8"
+						},
+						"lat": {
+							"type": "number",
+							"example": 10.782731
+						},
+						"lng": {
+							"type": "number",
+							"example": 106.6708
+						},
+						"city": {
+							"type": "string",
+							"example": "SGN"
+						}
+					}
+				}
+			}
+		}
+	}
+}

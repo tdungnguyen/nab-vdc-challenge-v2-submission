@@ -1,0 +1,57 @@
+@startuml c2-level-architecture
+
+!include ../_lib/xuanye/c4_container.puml
+LAYOUT_TOP_DOWN
+LAYOUT_WITH_LEGEND()
+
+title Container diagram for NAB VDC Challenge v2 - by dzungnt
+
+' List of actors
+Actor(customer, "Customer", "")
+Actor(marketing_specialist, "iCommerce Marketing Specialist", "")
+
+' List of frontend and internal backend services
+System_Ext(icommerce, "iCommerce", "An online shopping application")
+
+System_Boundary(internal_boundary, "iCommerce internal system") {
+    Container(gateway, "Gateway / Load balancer", "Nginx")
+    Container(log_collector, "Log collector", "Fluentd")
+
+    Container(service_product, "Product service", "Node.js/Express")
+    Container(service_store, "Store service", "Node.js/Express")
+
+    ContainerDb(database, "Database", "MongoDB")
+    ContainerDb(cache, "Cache", "Redis")
+
+    Container(bucket, "Storage bucket", "MinIO")
+    ContainerDb(disk, "Storage disk", "Storage disk")
+
+    Container(dashboard, "Dashboard", "Kibana")
+    Container(search_engine, "Search engine", "Elasticsearch")
+    ContainerDb(log_central, "Log central", "Logstash")
+}
+
+Rel_D(customer, icommerce, "Uses")
+Rel_D(icommerce, gateway, "Sends", "JSON/HTTP")
+Rel_L(gateway, log_collector, "Sends access_logs")
+Rel_L(log_collector, search_engine, "Sends access_logs")
+
+Rel_D(dashboard, search_engine, "Visualizes", "JSON/HTTP")
+Rel_D(search_engine, log_central, "Stores")
+
+Rel_D(gateway, service_product, "Routes")
+Rel_D(gateway, service_store, "Routes")
+Rel_D(gateway, bucket, "Routes")
+
+Rel(service_product, service_store, "Sends", "JSON/HTTP")
+
+Rel_D(service_product, database, "Persists", "TCP/IP")
+Rel_D(service_store, database, "Persists", "TCP/IP")
+
+Rel_D(service_product, cache, "Stores", "TCP/IP")
+Rel(service_product, bucket, "Sends", "JSON/HTTP")
+Rel_D(bucket, disk, "Mounts", "TCP/IP")
+
+Rel_D(marketing_specialist, dashboard, "Uses")
+
+@enduml
