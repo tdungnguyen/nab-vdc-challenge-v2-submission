@@ -32,4 +32,4 @@ About the system, we would have following components:
 
 ### References
 
-This submission of mine was supported with xuanye's C4 model & ![PLantUML](https://plantuml.com/) be Diagram-as-code for easy for everyone in the project to contribute and keep the consistency among the product development growth path.
+This submission of mine was supported with xuanye's C4 model & [PLantUML](https://plantuml.com/) be Diagram-as-code for easy for everyone in the project to contribute and keep the consistency among the product development growth path.
