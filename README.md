@@ -29,3 +29,7 @@ About the system, we would have following components:
 - For deployment, me personally fond of Kubernetes. It is a great orchestration platform to deploy applications with amazing scalibility and configuration. 
 
 ![Kubernetes deployment model](./docs/diagrams/deployment/kubernetes-deployment-model.png)
+
+### References
+
+This submission of mine was supported with xuanye's C4 model & ![PLantUML](https://plantuml.com/) be Diagram-as-code for easy for everyone in the project to contribute and keep the consistency among the product development growth path.
